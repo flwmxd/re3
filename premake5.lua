@@ -50,6 +50,9 @@ else
 	Librw = os.getenv("LIBRW") or "vendor/librw"
 end
 
+
+LibEditor = "vendor/editor"
+
 function getsys(a)
 	if a == 'windows' then
 		return 'win'
@@ -239,6 +242,44 @@ project "librw"
 	filter  {}
 end
 
+project "libEditor"
+	kind "StaticLib"
+	targetname "editor"
+	cppdialect "c++17"
+	targetdir(path.join(LibEditor, "lib/%{cfg.platform}/%{cfg.buildcfg}"))
+	files { path.join(LibEditor, "src/imgui/imgui_tables.cpp") }
+	files { path.join(LibEditor, "src/imgui/imgui_draw.cpp") }
+	files { path.join(LibEditor, "src/imgui/imgui_widgets.cpp") }
+	files { path.join(LibEditor, "src/imgui/imgui_widgets_user.cpp") }
+	files { path.join(LibEditor, "src/imgui/imgui.cpp") }
+	files { path.join(LibEditor, "src/imgui/TextEditor.cpp") }
+	files { path.join(LibEditor, "src/imgui/imgui_impl_glfw.cpp") }
+	files { path.join(LibEditor, "src/imgui/ImGuizmo.cpp") }
+	files { path.join(LibEditor, "src/imgui/implot.cpp") }
+	files { path.join(LibEditor, "src/imgui/implot_items.cpp") }
+	files { path.join(LibEditor, "src/editor/*.*") }
+	
+	includedirs { "src" }
+	includedirs { "src/imgui" }
+	includedirs { "vendor/librw/src/gl" }
+
+	-- files { path.join(LibEditor, "src/imgui_impl_vulkan.cpp") }
+
+	filter "platforms:*librw_gl3_glfw*"
+		files { path.join(LibEditor, "src/imgui/imgui_impl_opengl3.cpp") }
+		
+	filter { "platforms:*x86*" }
+		architecture "x86"
+
+	filter { "platforms:*amd64*" }
+		architecture "amd64"
+
+	filter "platforms:win*"
+		defines { "_CRT_SECURE_NO_WARNINGS", "_CRT_NONSTDC_NO_DEPRECATE" }
+
+	filter  {}
+
+
 local function addSrcFiles( prefix )
 	return prefix .. "/*cpp", prefix .. "/*.h", prefix .. "/*.c", prefix .. "/*.ico", prefix .. "/*.rc"
 end
@@ -247,10 +288,11 @@ project "re3"
 	kind "WindowedApp"
 	targetname "re3"
 	targetdir "bin/%{cfg.platform}/%{cfg.buildcfg}"
-
 	if(_OPTIONS["with-librw"]) then
 		dependson "librw"
 	end
+
+	dependson "libEditor"
 
 	files { addSrcFiles("src") }
 	files { addSrcFiles("src/animation") }
@@ -275,6 +317,7 @@ project "re3"
 	files { addSrcFiles("src/vehicles") }
 	files { addSrcFiles("src/weapons") }
 	files { addSrcFiles("src/extras") }
+
 	if(not _OPTIONS["no-git-hash"]) then
 		files { "src/extras/GitSHA1.cpp" } -- this won't be in repo in first build
 	else
@@ -305,6 +348,8 @@ project "re3"
 	includedirs { "src/weapons" }
 	includedirs { "src/extras" }
 
+	includedirs { "vendor/editor/src" }
+
 	if(not _OPTIONS["no-git-hash"]) then
 		defines { "USE_OUR_VERSIONING" }
 	end
@@ -314,6 +359,8 @@ project "re3"
 		includedirs { "vendor/opus/include" }
 		includedirs { "vendor/opusfile/include" }
 	end
+
+	links { "libEditor" }
 
 	filter "configurations:Vanilla"
 		defines { "VANILLA_DEFINES" }

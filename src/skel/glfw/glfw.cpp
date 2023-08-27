@@ -101,6 +101,8 @@ RwUInt32 gGameState;
 char gSelectedJoystickName[128] = "";
 #endif
 
+#include "editor/ImGuiSystem.h"
+
 /*
  *****************************************************************************
  */
@@ -1015,7 +1017,7 @@ void _InputInitialiseJoys()
 
 long _InputInitialiseMouse()
 {
-	glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+	//glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 	return 0;
 }
 
@@ -1831,6 +1833,7 @@ windowIconifyCB(GLFWwindow* window, int iconified) {
 	WindowIconified = !!iconified;
 }
 
+
 /*
  *****************************************************************************
  */
@@ -2043,6 +2046,11 @@ main(int argc, char *argv[])
 	
 	initkeymap();
 
+
+	maple::ImGuiSystem::instance()->onInit(
+		RsGlobal.width, RsGlobal.height, PSGLOBAL(window)
+	);
+
 	while ( TRUE )
 	{
 		RwInitialised = TRUE;
@@ -2085,6 +2093,9 @@ main(int argc, char *argv[])
 #endif
 		{
 			glfwPollEvents();
+
+
+
 #ifdef GET_KEYBOARD_INPUT_FROM_X11
 			checkKeyPresses();
 #endif
@@ -2292,8 +2303,10 @@ main(int argc, char *argv[])
 						float ms = (float)CTimer::GetCurrentTimeInCycles() / (float)CTimer::GetCyclesPerMillisecond();
 						if ( RwInitialised )
 						{
-							if (!CMenuManager::m_PrefsFrameLimiter || (1000.0f / (float)RsGlobal.maxFPS) < ms)
+							if (!CMenuManager::m_PrefsFrameLimiter || (1000.0f / (float)RsGlobal.maxFPS) < ms) 
+							{
 								RsEventHandler(rsIDLE, (void *)TRUE);
+							}
 						}
 						break;
 					}
@@ -2307,7 +2320,6 @@ main(int argc, char *argv[])
 					ForegroundApp = TRUE;
 					RsEventHandler(rsACTIVATE, (void *)TRUE);
 				}
-				
 			}
 		}
 

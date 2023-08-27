@@ -35,6 +35,8 @@
 #include "Wanted.h"
 #include "General.h"
 
+#include "editor/ImGuiSystem.h"
+
 #ifdef GTA_PS2
 #include "eetypes.h"
 #include "libpad.h"
@@ -591,6 +593,9 @@ void CPad::UpdateMouse()
 		double xpos = 1.0f, ypos;
 		glfwGetCursorPos(PSGLOBAL(window), &xpos, &ypos);
 		if (xpos == 0.f)
+			return;
+
+		if (maple::ImGuiSystem::instance()->isHoldingMouse())
 			return;
 
 		int32 signX = 1;

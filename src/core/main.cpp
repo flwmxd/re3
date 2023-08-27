@@ -1558,7 +1558,8 @@ Render2dStuffAfterFade(void)
 	CFont::DrawFonts();
 	POP_RENDERGROUP();
 }
-
+#include "editor/ImGuiSystem.h"
+#include "editor/Editor.h"
 void
 Idle(void *arg)
 {
@@ -1750,6 +1751,12 @@ Idle(void *arg)
 	if (gbShowTimebars)
 		tbDisplay();
 
+
+	maple::ImGuiSystem::instance()->newFrame(CTimer::GetTimeStep());
+	maple::Editor::instance()->drawMenu();
+	maple::ImGuiSystem::instance()->update();
+	maple::ImGuiSystem::instance()->onRender();
+
 	DoRWStuffEndOfFrame();
 
 	POP_MEMID();	// MEMID_RENDER
@@ -1802,6 +1809,8 @@ InitialiseGame(void)
 	LoadingScreen(nil, nil, "loadsc0");
 	CGame::Initialise("DATA\\GTA3.DAT");
 }
+
+
 
 RsEventStatus
 AppEventHandler(RsEvent event, void *param)

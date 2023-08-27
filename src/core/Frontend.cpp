@@ -4305,7 +4305,7 @@ CMenuManager::ProcessButtonPresses(void)
 {
 	if (pEditString || pControlEdit)
 		return;
-
+	
 	bool goBack = false;
 	bool optionSelected = false;
 	bool goUp = false;
@@ -5650,7 +5650,7 @@ CMenuManager::ShutdownJustMenu()
 {
 	// In case we're windowed, keep mouse centered while in game. Done in main.cpp in other conditions.
 #if defined(RW_GL3) && defined(IMPROVED_VIDEOMODE)
-	glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	//glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 #endif
 	m_bMenuActive = false;
 	CTimer::EndUserPause();
@@ -5759,7 +5759,7 @@ CMenuManager::SwitchMenuOnAndOff()
 		
 		// In case we're windowed, keep mouse centered while in game. Done in main.cpp in other conditions.
 #if defined(RW_GL3) && defined(IMPROVED_VIDEOMODE)
-		glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, m_bMenuActive && m_nPrefsWindowed ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_DISABLED);
+		//glfwSetInputMode(PSGLOBAL(window), GLFW_CURSOR, m_bMenuActive && m_nPrefsWindowed ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_DISABLED);
 #endif
 	}
 
